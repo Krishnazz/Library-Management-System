@@ -31,7 +31,7 @@ public class BookService {
     public Book updateBook(Long id,Book book){
 
 
-        Book existingBook=bookRepository.findById(id).orElseThrow(()->new RuntimeException("Book with id " + id + " does not exist"));
+        Book existingBook=bookRepository.findById(id).orElseThrow(()->new BookNotFoundException("Book with id " + id + " does not exist"));
         //if(existingBook!=null){
             existingBook.setTitle(book.getTitle());
             existingBook.setAuthor(book.getAuthor());
