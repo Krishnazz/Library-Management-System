@@ -1,11 +1,11 @@
-package com.library.library_management.dto;
+package com.library.library_management.exception;
 
  
 import java.time.LocalDateTime;
 
-public record errorResponse (
+public record ErrorResponse(
          LocalDateTime timestamp,
         int status,
         String error,
-        String msg
+        String message
 ){}
