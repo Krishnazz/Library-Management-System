@@ -18,46 +18,44 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public Book addBook(Book book){
-       return bookRepository.save(book);
+    public BookResponse addBook(BookRequest bookRequest){
+       return convertToBookResponse(bookRepository.save(convertToBook(bookRequest)));
     }
-    public List<Book> getAllBooks(){
-       return bookRepository.findAll();
+    public List<BookResponse> getAllBooks(){
+       return bookRepository.findAll().stream().map(i->convertToBookResponse(i)).toList();
     }
-    public Book getBookById(Long id){
-        if(!bookRepository.existsById(id)){
-            throw new BookNotFoundException("Book with id " + id + " does not exist");
-        }
-        return bookRepository.findById(id).orElse(null);
+    public BookResponse getBookById(Long id){
+        return convertToBookResponse(findBookOrThrow(id));
     }
-    public Book updateBook(Long id,Book book){
+    public BookResponse updateBook(Long id,BookRequest book){
 
 
-        Book existingBook=bookRepository.findById(id).orElseThrow(()->new BookNotFoundException("Book with id " + id + " does not exist"));
+        Book existingBook=findBookOrThrow(id);
         //if(existingBook!=null){
             existingBook.setTitle(book.getTitle());
             existingBook.setAuthor(book.getAuthor());
             existingBook.setIsbn(book.getIsbn());
             existingBook.setAvailable(book.isAvailable());
             existingBook.setPublishedYear(book.getPublishedYear());
-            return bookRepository.save(existingBook);
+            return convertToBookResponse(bookRepository.save(existingBook));
        // }
       //return null;
     }
-    public boolean deleteBookById(Long id){
+    public void deleteBookById(Long id){
 
-        if(!bookRepository.existsById(id)){
-            throw new BookNotFoundException("Book with id " + id + " does not exist");
-        }
+
        /* if(bookRepository.existsById(id)){
             bookRepository.deleteById(id);
             return true;
         }*/
         bookRepository.deleteById(id);
-        return true;
+
+    }
+    private Book findBookOrThrow(Long id){
+        return bookRepository.findById(id).orElseThrow(()->new BookNotFoundException("Book with id " + id + " does not exist"));
     }
 
-    public Book convertToBook(BookRequest bookRequest){
+    private Book convertToBook(BookRequest bookRequest){
         Book book = new Book();
         book.setTitle(bookRequest.getTitle());
         book.setAuthor(bookRequest.getAuthor());
