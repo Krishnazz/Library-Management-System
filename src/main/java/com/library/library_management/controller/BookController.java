@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api/books")
 public class BookController {
     private final BookService bookService;
 
@@ -16,41 +17,28 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping("/api/books")
+    @GetMapping
     public ResponseEntity<?> getBooks(){
-//        if(bookService.getAllBooks().isEmpty()){
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
         return new ResponseEntity<>(bookService.getAllBooks(), HttpStatus.OK);
     }
-    @PostMapping("/api/books")
+    @PostMapping
     public ResponseEntity<?> addBook(@RequestBody @Valid BookRequest bookRequest){
         Book book=bookService.convertToBook(bookRequest);
         return new ResponseEntity<>(bookService.addBook(book), HttpStatus.CREATED);
     }
-    @GetMapping("/api/books/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getBook(@PathVariable Long id ){
         Book book=  bookService.getBookById(id);
-//        if(book!=null){
-//            return new ResponseEntity<>(book,HttpStatus.OK);
-//        }
-//
-//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
             return new ResponseEntity<>(book,HttpStatus.OK);
 
     }
-    @PutMapping("/api/books/{id}")
+    @PutMapping("{id}")
     public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody @Valid BookRequest bookRequest){
         Book book=bookService.convertToBook(bookRequest);
         Book updatedBook=bookService.updateBook(id, book);
-      /*  if(updatedBook!=null){
-            return new ResponseEntity<>(updatedBook,HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);*/
         return new ResponseEntity<>(updatedBook,HttpStatus.OK);
     }
-    @DeleteMapping("/api/books/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<?> deleteBook(@PathVariable Long id){
 
         if(bookService.deleteBookById(id)){
