@@ -1,5 +1,7 @@
 package com.library.library_management.service;
 
+import com.library.library_management.dto.BookRequest;
+import com.library.library_management.dto.BookResponse;
 import com.library.library_management.entity.Book;
 import com.library.library_management.exception.BookNotFoundException;
 import com.library.library_management.repository.BookRepository;
@@ -53,5 +55,23 @@ public class BookService {
         }*/
         bookRepository.deleteById(id);
         return true;
+    }
+
+    public Book convertToBook(BookRequest bookRequest){
+        Book book = new Book();
+        book.setTitle(bookRequest.getTitle());
+        book.setAuthor(bookRequest.getAuthor());
+        book.setIsbn(bookRequest.getIsbn());
+        book.setAvailable(bookRequest.isAvailable());
+        book.setPublishedYear(bookRequest.getPublishedYear());
+        return book;
+    }
+    private BookResponse convertToBookResponse(Book book){
+
+        return new BookResponse(
+                book.getId(),
+                book.getTitle(), book.getAuthor(), book.getIsbn(),
+                book.getPublishedYear(),book.isAvailable()
+        );
     }
 }
