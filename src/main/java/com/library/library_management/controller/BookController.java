@@ -1,7 +1,9 @@
 package com.library.library_management.controller;
 
+import com.library.library_management.dto.BookRequest;
 import com.library.library_management.entity.Book;
 import com.library.library_management.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,8 @@ public class BookController {
         return new ResponseEntity<>(bookService.getAllBooks(), HttpStatus.OK);
     }
     @PostMapping("/api/books")
-    public ResponseEntity<?> addBook(@RequestBody Book book){
+    public ResponseEntity<?> addBook(@RequestBody @Valid BookRequest bookRequest){
+        Book book=bookService.convertToBook(bookRequest);
         return new ResponseEntity<>(bookService.addBook(book), HttpStatus.CREATED);
     }
     @GetMapping("/api/books/{id}")
@@ -38,7 +41,8 @@ public class BookController {
 
     }
     @PutMapping("/api/books/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody Book book){
+    public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody @Valid BookRequest bookRequest){
+        Book book=bookService.convertToBook(bookRequest);
         Book updatedBook=bookService.updateBook(id, book);
       /*  if(updatedBook!=null){
             return new ResponseEntity<>(updatedBook,HttpStatus.OK);
