@@ -2,6 +2,7 @@ package com.library.library_management.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,6 +22,17 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorResponse,HttpStatus.NOT_FOUND);
     }
+
+    /* Explicitly added a method to validate the boolean field(available field) instead of using BooleanFlag */
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> handleNotReadableException(HttpMessageNotReadableException e){
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),400,"BadRequest","Malformed JSON or wrong data type (e.g. available must be true or false)"
+        );
+        return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationException(MethodArgumentNotValidException e){
